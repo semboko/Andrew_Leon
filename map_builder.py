@@ -7,7 +7,7 @@ pygame.init()
 
 display = pygame.display.set_mode((700, 500))
 clock = pygame.time.Clock()
-fps = 60
+fps = 5
 
 map = []
 map_surface = Surface((700, 500))
@@ -59,7 +59,7 @@ while True:
         col_idx = click_x // 25
         row_idx = click_y // 25
         map[row_idx][col_idx] += 1
-        map[row_idx][col_idx] %= 9
+        map[row_idx][col_idx] %= 10
         map_surface = change_tile(map_surface, (row_idx, col_idx), map[row_idx][col_idx])
 
     display.fill((0, 0, 0))

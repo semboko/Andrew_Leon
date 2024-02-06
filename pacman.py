@@ -16,7 +16,7 @@ cell_size = pygame.Vector2(25, 25)
 map = json.load(open("map.txt", "r"))
 
 
-map_images = {i: pygame.image.load(f"assets/map-{i}.png") for i in range(9)}
+map_images = {i: pygame.image.load(f"assets/map-{i}.png") for i in range(10)}
 
 for row_index in range(len(map)):
     for col_index in range(len(map[row_index])):
@@ -41,14 +41,26 @@ class Pacman:
 
         self.pacman_rect = pygame.Rect(self.pos, self.image.get_size())
 
-    def get_neighbor_cell(self):
+    def get_neighbor_cell(self, pacman_rect: pygame.Rect = None):
+        pacman_rect = pacman_rect or self.pacman_rect
+        cells = []
+        for i in range(pacman_rect.left, pacman_rect.right, 25):
+            for j in range(pacman_rect.top, pacman_rect.bottom, 25):
+                v = i // 25
+                h = j // 25
+                cell = map[h][v]
+                rect = pygame.Rect((v * 25, h * 25), (25, 25))
+                cells.append(cell)
+        return cells
+
+    def get_neighbor_coordinates(self):
+        result = []
         for i in range(self.pacman_rect.left, self.pacman_rect.right, 25):
             for j in range(self.pacman_rect.top, self.pacman_rect.bottom, 25):
-                v = j // 25
-                h = i // 25
-                cell = map[v][h]
-                
-                rect = pygame.Rect((v * 25, h * 25), (25, 25))
+                v = i // 25
+                h = j // 25
+                result.append((v, h))
+        return result
 
     def handle_key(self, key: int):
         if key == pygame.K_UP:
@@ -70,16 +82,22 @@ class Pacman:
     def step(self):
         next_pos = self.pos + self.velocity
 
-        wall_pos = next_pos - pygame.Vector2(25/2, 25/2)
-        wall_rect = pygame.Rect(wall_pos, (25, 25))
+        # wall_pos = next_pos - pygame.Vector2(25/2, 25/2)
+        # wall_rect = pygame.Rect(wall_pos, (25, 25))
 
-        v = int(next_pos.x // 25)
-        h = int(next_pos.y // 25)
+        # v = int(next_pos.x // 25)
+        # h = int(next_pos.y // 25)
 
-        map_cell = map[h][v]
+        # map_cell = map[h][v]
+        next_rect = pygame.Rect(next_pos, self.pacman_rect.size)
 
-        if map_cell in (3, 4, 5, 6, 7, 8, 9):
-            self.velocity = pygame.Vector2(0, 0)
+        for map_cell in self.get_neighbor_cell(next_rect):
+            if map_cell in (3, 4, 5, 6, 7, 8, 9):
+                self.velocity = pygame.Vector2(0, 0)
+
+        for v, h in self.get_neighbor_coordinates():
+            if map[h][v] in (1, 2):
+                map[h][v] = 0
 
         self.pos += self.velocity
 
