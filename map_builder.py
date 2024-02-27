@@ -52,11 +52,17 @@ while True:
                 output.write(content)
                 output.close()
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            pressed = pygame.key.get_pressed()
             click_x, click_y = event.pos
             col_idx = click_x // 25
             row_idx = click_y // 25
-            map[row_idx][col_idx] += 1
-            map[row_idx][col_idx] %= 10
+            # map[row_idx][col_idx] += 1
+            # map[row_idx][col_idx] %= 10
+
+            for i in range(10):
+                if pressed[i + 48]:
+                    map[row_idx][col_idx] = i
+
             map_surface = change_tile(
                 map_surface, (row_idx, col_idx), map[row_idx][col_idx]
             )
