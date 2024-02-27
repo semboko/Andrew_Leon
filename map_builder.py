@@ -7,7 +7,7 @@ pygame.init()
 
 display = pygame.display.set_mode((700, 500))
 clock = pygame.time.Clock()
-fps = 5
+fps = 60
 
 map = []
 map_surface = Surface((700, 500))
@@ -51,16 +51,15 @@ while True:
                 output = open("map.txt", "w")
                 output.write(content)
                 output.close()
-
-    pressed_buttons = pygame.mouse.get_pressed()
-
-    if pressed_buttons[0] is True:
-        click_x, click_y = pygame.mouse.get_pos()
-        col_idx = click_x // 25
-        row_idx = click_y // 25
-        map[row_idx][col_idx] += 1
-        map[row_idx][col_idx] %= 10
-        map_surface = change_tile(map_surface, (row_idx, col_idx), map[row_idx][col_idx])
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            click_x, click_y = event.pos
+            col_idx = click_x // 25
+            row_idx = click_y // 25
+            map[row_idx][col_idx] += 1
+            map[row_idx][col_idx] %= 10
+            map_surface = change_tile(
+                map_surface, (row_idx, col_idx), map[row_idx][col_idx]
+            )
 
     display.fill((0, 0, 0))
     display.blit(map_surface, (0, 0))
