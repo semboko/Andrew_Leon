@@ -46,13 +46,20 @@ for row_index in range(len(map)):
         rect = map_surface.blit(map_images[value], (x, y))
         # pygame.draw.rect(map_surface, (255, 0, 0), rect, 1)
 
-
 pacman_img = pygame.transform.scale(pygame.image.load("./assets/pacman.png"), (50, 50))
 pacman = Pacman(100, 100, pacman_img, display, map_surface, map, dot_sound)
 
+
+def load_ghost(filename):
+    ghost_img = pygame.image.load(filename).convert()
+    scaled_img = pygame.transform.scale(ghost_img, (50, 50))
+    scaled_img.set_colorkey((255, 255, 255))
+    return scaled_img
+
+
 ghosts: List[Ghost] = [
-    Ghost(500, 500, ghost_img, display, map_surface, map, dot_sound),
-    Ghost(100, 500, ghost_img, display, map_surface, map, dot_sound),
+    Ghost(500, 500, load_ghost("./assets/pinky.png"), display, map_surface, map, dot_sound),
+    Ghost(100, 500, load_ghost("./assets/inky.png"), display, map_surface, map, dot_sound),
 ]
 
 while True:
