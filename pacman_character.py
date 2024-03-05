@@ -13,6 +13,7 @@ class Character:
         self.velocity = pygame.Vector2(0, 0)
         self.image = img
         self.pacman_rect = pygame.Rect(self.pos, self.image.get_size())
+        self.score = 0
 
     def get_neighbor_coordinates(self, pacman_rect: Optional[pygame.Rect] = None):
         pacman_rect = pacman_rect or self.pacman_rect
@@ -53,6 +54,7 @@ class Character:
                 pygame.draw.rect(self.map_surface, (0, 0, 0), rect)
                 self.dot_sound.set_volume(0.05)
                 self.dot_sound.play()
+                self.score += 5
 
         self.pos += self.velocity
 

@@ -29,6 +29,7 @@ ghost_pos = pygame.Vector2(50, 50)
 
 score = 0
 
+score_font = pygame.font.SysFont("Arial", 30)
 
 dot_sound = pygame.mixer.Sound("./assets/coinsplash.ogg")
 
@@ -58,8 +59,10 @@ def load_ghost(filename):
 
 
 ghosts: List[Ghost] = [
-    Ghost(370, 250, load_ghost("./assets/pinky.png"), display, map_surface, map, dot_sound),
+    Ghost(600, 100, load_ghost("./assets/pinky.png"), display, map_surface, map, dot_sound),
     Ghost(300, 250, load_ghost("./assets/inky.png"), display, map_surface, map, dot_sound),
+    Ghost(600, 400, load_ghost("./assets/blinky.png"), display, map_surface, map, dot_sound),
+    Ghost(100, 400, load_ghost("./assets/clyde.png"), display, map_surface, map, dot_sound),
 ]
 
 while True:
@@ -81,9 +84,12 @@ while True:
     pacman.draw()
 
     for ghost in ghosts:
-        next_pos = ghost.plan_next_pos(pacman.pos) or ghost.pos
-        ghost.pos = next_pos
+        next_pos = ghost.plan_next_pos(pacman.pos)
+        ghost.pos = next_pos or ghost.pos
         ghost.draw()
+
+    score_img = score_font.render("Score: " + str(pacman.score), True, (255, 255, 255), (0, 0, 0))
+    display.blit(score_img, (0, 0))
 
     pygame.display.update()
     clock.tick(fps)
