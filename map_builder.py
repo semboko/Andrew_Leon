@@ -1,6 +1,7 @@
 import pygame
 from pygame.surface import Surface
 import json
+import os
 
 
 pygame.init()
@@ -24,12 +25,21 @@ map_images = {
     for i in range(10)
 }
 
+if "map.txt" in os.listdir("./"):
+    file = open("map.txt", "r")
+    map_file = json.load(file)
+    file.close()
+    for row_idx in range(len(map_file)):
+        for col_idx in range(len(map_file[row_idx])):
+            map[row_idx][col_idx] = map_file[row_idx][col_idx]
+
 for row_index in range(len(map)):
     for col_index in range(len(map[row_index])):
         x = col_index * 25
         y = row_index * 25
         value = map[row_index][col_index]
         map_surface.blit(map_images[value], (x, y))
+
 
 def change_tile(map_surface, coords, img_number):
     tile_x = coords[1] * 25

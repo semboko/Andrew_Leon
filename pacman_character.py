@@ -99,14 +99,13 @@ class Ghost(Character):
         gscore[current_pos] = 0
         hscore[current_pos] = self.pos.distance_to(packman_pos)
         fscore[current_pos] = gscore[current_pos] + hscore[current_pos]
-
         while open_set:
             spot = min(open_set, key=lambda x: fscore[x])
             if spot == target:
                 rev_path = [target]
                 while rev_path[-1] != current_pos:
                     rev_path.append(came_from[rev_path[-1]])
-                break
+                return pygame.Vector2(rev_path[-2])
 
             open_set.remove(spot)
             closed_set.add(spot)
@@ -130,5 +129,3 @@ class Ghost(Character):
                 fscore[n] = gscore[n] + hscore[n]
 
                 came_from[n] = spot
-
-        return pygame.Vector2(rev_path[-2])

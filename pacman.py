@@ -58,8 +58,8 @@ def load_ghost(filename):
 
 
 ghosts: List[Ghost] = [
-    Ghost(500, 500, load_ghost("./assets/pinky.png"), display, map_surface, map, dot_sound),
-    Ghost(100, 500, load_ghost("./assets/inky.png"), display, map_surface, map, dot_sound),
+    Ghost(370, 250, load_ghost("./assets/pinky.png"), display, map_surface, map, dot_sound),
+    Ghost(300, 250, load_ghost("./assets/inky.png"), display, map_surface, map, dot_sound),
 ]
 
 while True:
@@ -81,7 +81,7 @@ while True:
     pacman.draw()
 
     for ghost in ghosts:
-        next_pos = ghost.plan_next_pos(pacman.pos)
+        next_pos = ghost.plan_next_pos(pacman.pos) or ghost.pos
         ghost.pos = next_pos
         ghost.draw()
 
