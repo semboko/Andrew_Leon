@@ -59,15 +59,15 @@ while True:
             exit()
         if event.type == pygame.MOUSEBUTTONDOWN:
             for fruit in fruits:
-                x, y, kind, *_ = fruit
+                x, y, kind, yvel = fruit
                 fi = fruit_imgs[kind]
                 fruit_hitbox = pygame.Rect((x, y), fi.get_size())
                 if fruit_hitbox.collidepoint(event.pos):
                     fruits.remove(fruit)
                     score += 2
                     choice(sword_sounds).play()
-                    halves.append([x, y, half_imgs1[kind], -3, 0])
-                    halves.append([x, y, half_imgs2[kind], 3, 0])
+                    halves.append([x, y, half_imgs1[kind], -8, yvel])
+                    halves.append([x, y, half_imgs2[kind], 8, yvel])
 
     display.blit(bg_img, (-340, 0))
     for f in fruits:
@@ -86,7 +86,7 @@ while True:
         x, y, img, xvel, yvel = half
         display.blit(img, (x, y))
         half[0] = half[0] + xvel
-        half[3] = half[3] * 0.9
+        half[3] = half[3] * 0.95
 
         half[1] = half[1] + yvel
         half[4] = half[4] + 0.028
