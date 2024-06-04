@@ -32,7 +32,10 @@ def generate_platform():
     x = randint(0, display.get_width() - 70)
     ptype = choices((0, 1, 2), (0.8, 0.09, 0.11))[0]
     platform_coords.append([x, bottom_y, ptype, 1])
-    bottom_y -= randint(50, 80)
+    if ptype == 1:
+        bottom_y -= randint(10, 20)
+    else:
+        bottom_y -= randint(50, 80)
 
 
 for i in range(10):
@@ -95,6 +98,9 @@ while True:
 
     if offset_y * -1 > score:
         score = round(offset_y * -1, 1)
+
+    if last_platform[1] < offset_y - 600:
+        print("Game Over")
 
     score_img = score_font.render(str(score) + "m", True, (0, 0, 0))
     display.blit(score_img, (0, 0))
