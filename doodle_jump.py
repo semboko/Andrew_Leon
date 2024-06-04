@@ -1,5 +1,5 @@
 import pygame
-from random import randint
+from random import randint, choices
 
 
 pygame.init()
@@ -9,27 +9,42 @@ clock = pygame.time.Clock()
 doodler = pygame.image.load("./assets/Doodler.png")
 doodler = pygame.transform.scale_by(doodler, 0.3)
 
+score_font = pygame.font.Font("./assets/Electrolize-Regular.ttf", 30)
+# score_font = pygame.font.SysFont("Arial", 30)
+
 platforms = [
     pygame.image.load("./assets/pregular.png"),
     pygame.image.load("./assets/pweak.png"),
     pygame.image.load("./assets/pmoving.png"),
 ]
 
+jump_sound = pygame.mixer.Sound("./assets/jumpland.wav")
+crack_sound = pygame.mixer.Sound("./assets/multiple_cracks_1.wav")
+
 platform_coords = []
 
+
 bottom_y = display.get_height()
-for i in range(100):
-    x = randint(0, display.get_width())
-    y = bottom_y
-    ptype = randint(0, 2)
-    platform_coords.append([x, y, ptype])
+
+
+def generate_platform():
+    global bottom_y
+    x = randint(0, display.get_width() - 70)
+    ptype = choices((0, 1, 2), (0.8, 0.09, 0.11))[0]
+    platform_coords.append([x, bottom_y, ptype, 1])
     bottom_y -= randint(50, 80)
 
 
-dx = 0
-dy = 0
+for i in range(10):
+    generate_platform()
+
+
+dx = 200
+dy = 400
 vel_y = 0
 offset_y = 0
+score = 0
+
 
 while True:
     for event in pygame.event.get():
@@ -44,19 +59,45 @@ while True:
 
     display.fill((255, 255, 255))
     drect = display.blit(doodler, (dx, dy))
+    drect.height -= 55
+    drect.width -= 20
+    drect.top += 55
+    pygame.draw.rect(display, (255, 0, 0), drect, 1)
 
-    dy += vel_y
+    offset_y += vel_y
     if vel_y < 15:
         vel_y += .30
 
-    for px, py, ptype in platform_coords:
+    for platform in platform_coords:
+        px, py, ptype, direction = platform
         pimg = platforms[ptype]
-        display.blit(pimg, (px, py))
-        prect = pimg.get_rect(left=px, top=py)
-        if drect.colliderect(prect) and vel_y > 0:
-            vel_y = -10
+        prect = display.blit(pimg, (px, py - offset_y))
+        pygame.draw.rect(display, (255, 0, 0), prect, 1)
+        if drect.colliderect(prect) and vel_y > 4:
+            if ptype == 1:
+                platform_coords.remove(platform)
+                crack_sound.play()
+            else:
+                vel_y = -10
+                jump_sound.play()
+        if ptype == 2:
+            platform[0] += direction
+        if platform[0] < 0:
+            platform[3] = 1
+        if platform[0] > 400:
+            platform[3] = -1
+        if (py - offset_y) > 800:
+            platform_coords.remove(platform)
+
+    last_platform = platform_coords[-1]
+    if last_platform[1] - offset_y > 0:
+        generate_platform()
+
+    if offset_y * -1 > score:
+        score = round(offset_y * -1, 1)
+
+    score_img = score_font.render(str(score) + "m", True, (0, 0, 0))
+    display.blit(score_img, (0, 0))
 
     pygame.display.update()
     clock.tick(60)
-
-    print(vel_y)
